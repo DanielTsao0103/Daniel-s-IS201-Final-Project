@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Ai Typing Test</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:500,700" rel="stylesheet"
+        type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet" type="text/css" />
+
+    <link href="../css/styles.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #775d5d;
+            /* Dark gray background */
+            color: white;
+            /* White text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #444;
+            /* Slightly lighter gray for container */
+            border-radius: 8px;
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .timer {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .test-text p {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: white;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .test-text span.correct {
+            color: #4CAF50;
+            font-size: 24px;
+            /* Larger text for highlighted correct word */
+        }
+
+        .test-text span.incorrect {
+            color: #FF3B30;
+            font-size: 24px;
+            /* Larger text for highlighted incorrect word */
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: block;
+            /* Display the input box */
+            background-color: #555;
+            color: white;
+        }
+
+        .results {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+            /* Hidden initially */
+        }
+
+        .results p {
+            font-size: 24px;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .results .btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .results .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">
+            <span class="d-block d-lg-none">Daniel Tsao</span>
+            <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2"
+                    src="../assets/img/profile photo.JPG" alt="..." /></span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span
+                class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="../index.html">About</a></li>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger"
+                        href="../index.html#experience">Experience</a></li>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href=../index.html#education">Education</a>
+                </li>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="../index.html#skills">Skills</a></li>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="../index.html#education">Interests</a>
+                </li>
+
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="aiapp.html">AI Typing Game</a>
+                </li>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="mypassions.html">My Passions</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Typing Speed Test</h1>
+        <p class="timer" id="timer">Time: 30</p>
+        <div class="test-text">
+            <p id="text-to-type"></p>
+        </div>
+        <div class="results">
+            <p>Speed: <span id="speed">0 WPM</span></p>
+            <p>Accuracy: <span id="accuracy">100%</span></p>
+            <button class="btn" id="try-again" onclick="restartTest()">Try Again</button>
+        </div>
+        <input type="text" id="user-input" placeholder="Start typing..." autofocus />
+    </div>
+
+    <script>
+        const timerDisplay = document.getElementById('timer');
+        const textToType = document.getElementById('text-to-type');
+        const userInput = document.getElementById('user-input');
+        const speedDisplay = document.getElementById('speed');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const resultsSection = document.querySelector('.results');
+        const tryAgainButton = document.getElementById('try-again');
+
+        const sampleText = `There's nothing quite like the thrill of watching American football. It's the best sport in the world, hands down. The energy in the stadiums is electric, with fans cheering, bands playing, and the palpable excitement in the air. Every touchdown, every tackle, and every strategic play keeps you on the edge of your seat. The camaraderie among fans is unmatched, creating a sense of community and shared passion.
+Even when I'm not at the stadium, watching the game on TV with friends and family is an experience in itself. The living room transforms into a mini stadium, filled with laughter, cheers, and sometimes even a bit of friendly rivalry. The anticipation builds with every play, and the joy of celebrating a win together is simply unbeatable.
+American football isn't just a sport; it's a tradition, a way of life. The combination of athleticism, strategy, and sheer excitement makes it the greatest sport ever. Whether I'm in the stands or on the couch, the experience is always amazing, bringing people together and creating unforgettable memories.`;
+
+        let timer;
+        let timeLeft = 30;
+        let startTime;
+        let typedText = '';
+        let correctChars = 0;
+        let totalChars = 0;
+        let wordsTyped = 0;
+        let testStarted = false;
+        let gameOver = false;
+
+        // Function to start the test and begin the timer
+        function startTest() {
+            if (!testStarted) {
+                testStarted = true;
+                startTime = Date.now();
+                timer = setInterval(updateTimer, 1000);
+            }
+        }
+
+        // Function to update the timer
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                timerDisplay.textContent = `Time: ${timeLeft}`;
+            } else {
+                clearInterval(timer);
+                gameOver = true;
+                userInput.disabled = true; // Disable input when the game ends
+                showResults();
+            }
+        }
+
+        // Function to calculate and show the results
+        function updateResults() {
+            const elapsedTime = (Date.now() - startTime) / 1000; // Time in seconds
+            const wpm = Math.floor((wordsTyped / elapsedTime) * 60); // Words per minute
+
+            const accuracy = Math.floor((correctChars / totalChars) * 100); // Accuracy percentage
+
+            speedDisplay.textContent = `${wpm} WPM`;
+            accuracyDisplay.textContent = `${accuracy}%`;
+        }
+
+        // Function to update the progress during typing
+        function updateProgress() {
+            const words = typedText.split(' ');
+
+            // Split the sample text into words and highlight the current one
+            let updatedText = sampleText.split(' ').map((word, index) => {
+                // Check the correctness of the current word
+                const typedWord = words[index];
+                if (typedWord === word) {
+                    return `<span class="correct">${word}</span>`; // Correct word (green)
+                } else if (typedWord && typedWord !== word) {
+                    return `<span class="incorrect">${word}</span>`; // Incorrect word (red)
+                } else {
+                    return word; // No typing yet, keep the word as is
+                }
+            }).join(' ');
+
+            // Update the displayed text
+            textToType.innerHTML = updatedText;
+
+            // Check accuracy and total characters
+            correctChars = 0;
+            totalChars = 0;
+            wordsTyped = words.length;
+
+            // Count correctly typed characters and total characters
+            for (let i = 0; i < typedText.length; i++) {
+                if (typedText[i] === sampleText[i]) {
+                    correctChars++;
+                }
+                totalChars++;
+            }
+
+            // Real-time WPM and Accuracy calculation
+            updateResults();
+        }
+
+        // Event listener for typing input
+        userInput.addEventListener('input', () => {
+            if (!testStarted && !gameOver) {
+                startTest();  // Start the test immediately when typing starts
+            }
+
+            if (gameOver) return; // Prevent typing after the timer ends
+
+            typedText = userInput.value;
+            updateProgress();
+        });
+
+        // Function to show the results after the timer ends
+        function showResults() {
+            resultsSection.style.display = 'block'; // Show results
+        }
+
+        // Function to restart the test when clicking the "Try Again" button
+        function restartTest() {
+            // Reset variables
+            timeLeft = 30;
+            typedText = '';
+            correctChars = 0;
+            totalChars = 0;
+            wordsTyped = 0;
+            testStarted = false;
+            gameOver = false;
+            userInput.disabled = false; // Enable input
+            resultsSection.style.display = 'none'; // Hide results
+            userInput.value = '';
+            timerDisplay.textContent = `Time: ${timeLeft}`;
+            textToType.innerHTML = sampleText;
+            userInput.focus();
+            startTest(); // Restart the test
+        }
+
+        // Initialize the test text and display it
+        textToType.textContent = sampleText;
+        userInput.focus(); // Focus on the input box to start typing
+    </script>
+
+</body>
+
+</html>
